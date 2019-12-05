@@ -1,9 +1,11 @@
 <Query Kind="Program">
   <Namespace>System.Drawing</Namespace>
   <Namespace>System.Dynamic</Namespace>
+  <DisableMyExtensions>true</DisableMyExtensions>
 </Query>
 
-// My Extensions file is saved somewhere outside of the LINQPad Queries folder, so I'm backing it up here
+public static string Theme = "darkly";
+
 void Main()
 {
 	// Write code to test your extensions here. Press F5 to compile and run.
@@ -17,6 +19,7 @@ public static class MyExtensions
 	{
 		switch (classId)
 		{
+			case CSSClassId.PRIMARY: return input.SetClass("primary");
 			case CSSClassId.SECONDARY: return input.SetClass("secondary");
 			case CSSClassId.SUCCESS: return input.SetClass("success");
 			case CSSClassId.INFO: return input.SetClass("info");
@@ -36,9 +39,9 @@ public static class MyExtensions
 
 	private static string AddClassToDiv(string strHtml, string strClass)
 	{
-		strHtml = strHtml.Replace("div class=\"spacer\"", $"div class=\"{strClass}\"");
-		strHtml = strHtml.Replace("div style", $"div class=\"{strClass}\" style");
-		strHtml = strHtml.Replace("<div>", $"<div class=\"{strClass}\">");
+		strHtml = strHtml.Replace("div class=\"spacer\"", $"div class=\"{Theme} {strClass}\"");
+		strHtml = strHtml.Replace("div style", $"div class=\"{Theme} {strClass}\" style");
+		strHtml = strHtml.Replace("<div>", $"<div class=\"{Theme} {strClass}\">");
 		return strHtml;
 	}
 
@@ -49,7 +52,7 @@ public static class MyExtensions
 		strHtml = AddClassToDiv(strHtml, strClass);
 		return Util.RawHtml(strHtml);
 	}
-	public static object SetPrimary(this object input) => input.SetClass("spacer");
+	public static object SetPrimary(this object input) => input.SetClass("primary");
 	public static object SetSecondary(this object input) => input.SetClass("secondary");
 	public static object SetSuccess(this object input) => input.SetClass("success");
 	public static object SetInfo(this object input) => input.SetClass("info");
@@ -57,17 +60,33 @@ public static class MyExtensions
 	public static object SetDanger(this object input) => input.SetClass("danger");
 
 	public static void DumpClass(this object input, string strClass) => input.SetClass(strClass).Dump();
-	public static void DumpPrimary(this object input) => input.Dump();
+	public static void DumpPrimary(this object input) => input.DumpClass("primary");
 	public static void DumpSecondary(this object input) => input.DumpClass("secondary");
 	public static void DumpSuccess(this object input) => input.DumpClass("success");
 	public static void DumpInfo(this object input) => input.DumpClass("info");
 	public static void DumpWarning(this object input) => input.DumpClass("warning");
 	public static void DumpDanger(this object input) => input.DumpClass("danger");
 	#endregion BOOTSTRAP THEMES ENABLED!
+
+	public static void SetTheme(ColorThemeId themeId)
+	{
+		switch (themeId)
+		{
+			case ColorThemeId.CERULEAN: Theme = "cerulean"; break;
+			case ColorThemeId.COSMO: Theme = "cosmo"; break;
+			case ColorThemeId.CYBORG: Theme = "cyborg"; break;
+			case ColorThemeId.DARKLY: Theme = "darkly"; break;
+			case ColorThemeId.FLATLY: Theme = "flatly"; break;
+			case ColorThemeId.JOURNAL: Theme = "journal"; break;
+			case ColorThemeId.LITERA: Theme = "litera"; break;
+			default: Theme = "default"; break;
+		}
+	}
 }
 
 public enum CSSClassId
 {
+	DEFAULT,
 	PRIMARY,
 	SECONDARY,
 	SUCCESS,
@@ -75,7 +94,6 @@ public enum CSSClassId
 	WARNING,
 	DANGER
 }
-
 
 static object ToDump(object input)
 {
@@ -94,12 +112,16 @@ static object FormatColor(Color color)
 	result.Hex = ColorTranslator.ToHtml(Color.FromArgb(color.ToArgb()));
 	result.Swatch = Util.WithStyle("Swatch", $"color:{result.Hex}; background-color:{result.Hex}");
 	return result;
-	//	return Util.HorizontalRun(true, result.Name, result.RGB, result.Hex, result.Swatch);
-
-	//	dynamic exColor = Util.ToExpando(color);
-	//	string hex = ColorTranslator.ToHtml(Color.FromArgb(color.ToArgb()));
-	//	exColor.Hex = hex;
-	//	exColor.Swatch = Util.WithStyle(hex, $"color:{hex};background-color:{hex}");
-	//	return exColor;
 }
 
+public enum ColorThemeId
+{
+	DEFAULT,
+	CERULEAN,
+	COSMO,
+	CYBORG,
+	DARKLY,
+	FLATLY,
+	JOURNAL,
+	LITERA,
+}

@@ -4,16 +4,29 @@
 
 void Main()
 {
-	
-	Util.HorizontalRun(true,
-		System.Drawing.Color.Blue,
-		System.Drawing.Color.Blue.SetPrimary(),
-		System.Drawing.Color.Blue.SetSecondary(),
-		System.Drawing.Color.Blue.SetSuccess(),
-		System.Drawing.Color.Blue.SetInfo(),
-		System.Drawing.Color.Blue.SetWarning(),
-		System.Drawing.Color.Blue.SetDanger()
-	).Dump();
+	foreach (ColorThemeId theme in Enum.GetValues(typeof(ColorThemeId)))
+	{
+		DoColorTestDump(theme);
+	}
 }
 
+class Test
+{
+	public string Value = "Test";
+}
 
+void DoColorTestDump(ColorThemeId themeId)
+{
+	Test test = new Test();
+	
+	MyExtensions.SetTheme(themeId);
+	Util.HorizontalRun(true,
+		themeId,
+		test.SetPrimary(),
+		test.SetSecondary(),
+		test.SetSuccess(),
+		test.SetInfo(),
+		test.SetWarning(),
+		test.SetDanger()
+	).Dump();
+}
