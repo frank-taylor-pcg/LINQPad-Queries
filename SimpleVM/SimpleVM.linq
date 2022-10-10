@@ -1,10 +1,9 @@
 <Query Kind="Program">
-  <NuGetReference>Akka</NuGetReference>
-  <Namespace>Akka.Actor</Namespace>
   <Namespace>LINQPad.Controls</Namespace>
   <Namespace>System.Threading.Tasks</Namespace>
 </Query>
 
+// This isn't working
 void Main()
 {
 	Machine machine = new();
@@ -14,29 +13,34 @@ void Main()
 	
 	button.Dump();
 	
-	Test2(machine);
+	//Test2(machine);
+	Test1();
 }
 
 void Test1()
 {
 	VM vm = new() { DebugMode = true };
 
-	vm.Action("Say a simple hello", () => "Hello".Dump());
-
-	vm.Func<string>("Ask for a user name", () =>
-	{
-		Console.Write("Please enter your name: ");
-		return Console.ReadLine();
-	});
-
-	vm.Action("Say hello to the user", () => $"Hello, {vm.Return}".Dump());
-
-	// vm.Action("Throw an exception", () => throw new IOException("Oh gnoes, some kind of IO failure happened!")); 
-
-	vm.Func<bool>("Test if we can perform a boolean operation", () => PerformABooleanOperation());
-
+	vm.Action("Say a simple hello", SayHello);
+	//.Func<string>("Ask for a user name", PromptForName)
+	// I need a better way to do this
+	//.Action("Say hello to the user", () => SayHelloToUser(vm.Return))
+	//.Action("Throw an exception", () => throw new IOException("Oh gnoes, some kind of IO failure happened!"))
+	//.Func<bool>("Test if we can perform a boolean operation", PerformABooleanOperation)
 	vm.Run();
 }
+
+void SayHello() => "Hello".Dump();
+
+string PromptForName()
+{
+	Console.Write("Please enter your name: ");
+	return Console.ReadLine();
+}
+
+void SayHelloToUser(object user) => $"Hello, {user}".Dump();
+
+bool PerformABooleanOperation() => true;
 
 void Test2(Machine machine)
 {
@@ -48,12 +52,6 @@ void Test2(Machine machine)
 	//vm.Action("Display counter value", () => ((int)vm.Return).Dump());
 	vm.Run();
 }
-
-bool PerformABooleanOperation()
-{
-	return true;
-}
-
 
 public class Machine
 {
@@ -74,14 +72,16 @@ public class VM
 	
 	public object Return { get; set; }
 	
-	public void Action(string description, Action act)
+	public VM Action(string description, Action act, params object[] args)
 	{
-		actions.Add(address++, new(description, act));
+		actions.Add(address++, new(description, act, args));
+		return this;
 	}
 	
-	public void Func<T>(string description, Func<T> func)
+	public VM Func<T>(string description, Func<T> func, params object[] args)
 	{
 		actions.Add(address++, new(description, () => Return = func()));
+		return this;
 	}
 	
 	private void ProcessLoop()
@@ -118,9 +118,10 @@ public class VM
 		}
 	}
 
-	public void Run()
+	public VM Run()
 	{
 		Task.Run(ProcessLoop);
+		return this;
 	}
 }
 
@@ -130,13 +131,13 @@ public class VMException : Exception
 		: base($"Error processing [{description}]", innerException) { }
 }
 
-public class IfAction : VMAction
-{
-	public IfAction(string description, ) : base(description, 
-	{
-		
-	}
-}
+//public class IfAction : VMAction
+//{
+//	public IfAction(string description, ) : base(description, 
+//	{
+//		
+//	}
+//}
 
 public class VMAction
 {
@@ -155,9 +156,13 @@ public class VMAction
 		}
 	}
 		
-	public VMAction(string description, Action action)
+	public VMAction(string description, Action action, params object[] args)
 	{
 		Description = description;
 		Action = action;
+		if (args.Length > 0)
+		{
+			
+		}
 	}
 }

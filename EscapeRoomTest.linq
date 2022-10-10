@@ -107,4 +107,4 @@ string Paintings() => "CENA";
   return (2150 - 1895) * 12 + 1;
 */
 
-1156 is the number of universes
+// 1156 is the number of universes

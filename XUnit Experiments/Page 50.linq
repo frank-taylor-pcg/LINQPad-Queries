@@ -126,7 +126,7 @@ public class Tests
 			List<LineItem> lineItems = invoice.LineItems;
 			if (lineItems.Count() == 1)
 			{
-				LineItem expected = new LineItem(invoice, product, 5, 30, 69.96M);
+				LineItem expected = new LineItem(invoice, product, 5, 69.96M);
 				
 				LineItem actItem = lineItems.First();
 				Assert.Equal(expected, actItem);

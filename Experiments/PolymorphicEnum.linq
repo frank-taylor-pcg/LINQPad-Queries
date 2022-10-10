@@ -1,6 +1,7 @@
 <Query Kind="Program">
-  <Namespace>Newtonsoft.Json</Namespace>
+  <NuGetReference>Newtonsoft.Json</NuGetReference>
   <Namespace>System.Runtime.CompilerServices</Namespace>
+  <Namespace>Newtonsoft.Json</Namespace>
 </Query>
 
 static Default DefaultEnum = new Default();

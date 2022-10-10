@@ -6,7 +6,7 @@ void Main()
 {
 	Node node = new Node()
 	{
-		Color = "crimson",
+		Color = "steelblue",
 		Name = "This is a test"
 	};
 	node.Inputs.Add(new InputPin() { TypeClassification = TypeId.BOOLEAN, Name = "Boolean" });
@@ -107,6 +107,9 @@ class Node
 		int iMaxOutputLength = Outputs.Max(x => x.Name.Length);
 		int iHeight = (iMaxPins + 1) * 20;
 		int iWidth = (iMaxInputLength + iMaxOutputLength) * 6 + 40;
+		
+		x += 10;
+		y += 10;
 
 		result.Append($"<rect x='{x}' y='{y}' width='{iWidth}' height='{iHeight}' rx='6' stroke='white' stroke-width='1' fill='{Color}' />");
 		
@@ -124,7 +127,7 @@ class Node
 			py += 20;
 		}
 
-		result.Append($"<text x='{iWidth / 2}' y='15' text-anchor='middle' stroke='white'>{Name}</text>");
+		result.Append($"<text x='{iWidth / 2 + x}' y='{y + 15}' text-anchor='middle' stroke='white'>{Name}</text>");
 		result.Append($"<line x1='{x}' y1='{y + 20}' x2='{x + iWidth}' y2='{y + 20}' stroke='white' />");
 		
 		return result.ToString();
